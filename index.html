@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Secrétariat particulier · mobile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Figtree:wght@400;500;600;800&family=Martian+Mono:wght@400;600&display=swap">
+<style>
+/* Identite « Nuit », reprise a l'identique du tableau de bord web, adaptee
+   a un ecran de telephone. */
+:root{
+  color-scheme:dark;
+  --paper:#14151A; --surface:#1B1D24; --surface-2:#22252E; --sunken:#101116;
+  --ink:#ECEAE5; --ink-2:#A9A79F; --muted:#77746C;
+  --rule:#31343E; --rule-soft:#282B33;
+  --accent:#E2A03F; --accent-soft:rgba(226,160,63,.13);
+  --on-accent:#14151A;
+  --ok:#5FAE7C; --warn:#D9A038; --crit:#E2705C;
+  --ok-soft:rgba(95,174,124,.14); --warn-soft:rgba(217,160,56,.14); --crit-soft:rgba(226,112,92,.14);
+  --display:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif; --display-wght:800; --display-tight:-.025em;
+  --body:"Figtree","Helvetica Neue",Arial,sans-serif;
+  --mono:"Martian Mono",ui-monospace,Consolas,monospace;
+  --sc-label:.09em;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--body); font-size:15px; line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:560px;margin:0 auto;padding:0 16px 60px}
+.k{font-size:10px;font-weight:700;letter-spacing:var(--sc-label);text-transform:uppercase;color:var(--muted)}
+
+header.strip{
+  padding:22px 0 14px;border-bottom:2px solid var(--ink);
+}
+header.strip h1{
+  margin:0;font-family:var(--display);font-size:24px;font-weight:var(--display-wght);
+  letter-spacing:var(--display-tight);line-height:1;
+}
+.maj{margin-top:8px;font-family:var(--mono);font-size:12px;color:var(--accent)}
+
+/* ---------- ecran code ---------- */
+#ecran-code{padding:40px 0}
+#ecran-code p{color:var(--ink-2);font-size:14px}
+#code{
+  width:100%;font-family:var(--mono);font-size:24px;letter-spacing:.3em;text-align:center;
+  padding:14px;background:var(--surface);border:1px solid var(--rule);color:var(--ink);
+  margin-top:16px;
+}
+#code:focus{outline:2px solid var(--accent);outline-offset:2px}
+#valider{
+  width:100%;margin-top:14px;font-family:var(--body);font-size:13px;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;padding:14px;border:1px solid var(--accent);
+  background:var(--accent);color:var(--on-accent);cursor:pointer;
+}
+#valider:active{filter:brightness(1.1)}
+#erreur{
+  margin-top:14px;padding:11px 14px;background:var(--crit-soft);border:1px solid var(--crit);
+  color:var(--crit);font-size:13px;display:none;
+}
+#erreur.visible{display:block}
+
+/* ---------- panneaux ---------- */
+.panel{background:var(--surface);border:1px solid var(--rule);margin-top:18px}
+.panel > header{
+  display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+  padding:11px 14px;border-bottom:1px solid var(--rule);
+}
+.panel h2{margin:0;font-size:11px;font-weight:700;letter-spacing:var(--sc-label);text-transform:uppercase}
+.count{font-family:var(--mono);font-size:11px;color:var(--muted)}
+ul{margin:0;padding:0;list-style:none}
+.wk li,.rl .item,.proj-tache{padding:11px 14px;border-bottom:1px solid var(--rule-soft)}
+.wk li:last-child,.rl .item:last-child,.proj-tache:last-child{border-bottom:0}
+.wk .titre,.proj-tache .titre{font-weight:600}
+.wk .meta,.proj-tache .meta{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:3px}
+.wk .due.late,.proj-tache .due.late{color:var(--crit)}
+.rl .who{font-weight:600}
+.rl .about{color:var(--ink-2);font-size:13px;margin-top:3px}
+.vide{padding:14px;color:var(--muted);font-size:13px}
+
+/* ---------- portefeuille ---------- */
+.projet{border-bottom:1px solid var(--rule-soft)}
+.projet:last-child{border-bottom:0}
+.projet > summary{
+  padding:13px 14px;cursor:pointer;list-style:none;display:flex;align-items:center;
+  justify-content:space-between;gap:10px;
+}
+.projet > summary::-webkit-details-marker{display:none}
+.projet .ptitre{font-family:var(--display);font-weight:700;font-size:15px}
+.sev{font-family:var(--mono);font-size:10px;text-transform:uppercase;padding:2px 7px;border:1px solid currentColor}
+.sev.ok{color:var(--ok);background:var(--ok-soft)}
+.sev.warn{color:var(--warn);background:var(--warn-soft)}
+.sev.crit,.sev.retard{color:var(--crit);background:var(--crit-soft)}
+.sev.idle{color:var(--muted)}
+.projet .taches{padding:0 14px 12px}
+
+#dashboard{display:none}
+#dashboard.visible{display:block}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="strip">
+    <h1>Secrétariat particulier</h1>
+    <div class="maj" id="maj"></div>
+  </header>
+
+  <section id="ecran-code">
+    <p class="k">Accès protégé</p>
+    <p>Saisissez le code à six chiffres pour ouvrir le tableau de bord.</p>
+    <input id="code" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="off"
+      autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="12" placeholder="••••••">
+    <button id="valider" type="button">Ouvrir</button>
+    <div id="erreur">Code incorrect. Réessayez.</div>
+  </section>
+
+  <section id="dashboard">
+    <div class="panel" id="panel-semaine">
+      <header><h2>Ma semaine</h2><span class="count" id="count-semaine"></span></header>
+      <ul id="liste-semaine"></ul>
+    </div>
+    <div class="panel" id="panel-relances">
+      <header><h2>Relances à valider</h2><span class="count" id="count-relances"></span></header>
+      <ul id="liste-relances"></ul>
+    </div>
+    <div class="panel" id="panel-projets">
+      <header><h2>Projets</h2><span class="count" id="count-projets"></span></header>
+      <div id="liste-projets"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+'use strict';
+// Paquet chiffre injecte au moment de l'export (voir outils/exporter-mobile.js).
+// Porte le sel, l'IV, le texte chiffre + son etiquette d'authentification et
+// le nombre d'iterations PBKDF2 : tout ce qu'il faut pour dechiffrer, sauf le
+// code lui-meme, jamais stocke ici ni nulle part sur cette page.
+const PAQUET = /*__PAQUET__*/{"sel":"hzbfyJseqfhT7QYRI41ViA==","iv":"zbLzdAhQZkoB90Xl","texte":"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","etiquette":"fHVAGDM34tIAVld/kxUabg==","iterations":600000}/*__FIN_PAQUET__*/;
+
+function echapper(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+
+function base64VersOctets(b64) {
+  const bin = atob(b64);
+  const octets = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) octets[i] = bin.charCodeAt(i);
+  return octets;
+}
+
+// Derive la cle et dechiffre avec WebCrypto, en reproduisant exactement les
+// parametres de server/export.js : PBKDF2-SHA256, AES-256-GCM.
+async function dechiffrer(paquet, code) {
+  const enc = new TextEncoder();
+  const materiau = await crypto.subtle.importKey('raw', enc.encode(code), 'PBKDF2', false, ['deriveKey']);
+  const cle = await crypto.subtle.deriveKey(
+    {name: 'PBKDF2', salt: base64VersOctets(paquet.sel), iterations: paquet.iterations, hash: 'SHA-256'},
+    materiau, {name: 'AES-GCM', length: 256}, false, ['decrypt']);
+  const texteEtEtiquette = new Uint8Array([
+    ...base64VersOctets(paquet.texte), ...base64VersOctets(paquet.etiquette)
+  ]);
+  const clair = await crypto.subtle.decrypt(
+    {name: 'AES-GCM', iv: base64VersOctets(paquet.iv)}, cle, texteEtEtiquette);
+  return new TextDecoder().decode(clair);
+}
+
+function formatMaj(iso) {
+  try {
+    const d = new Date(iso);
+    const mois = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+    const hh = String(d.getHours()).padStart(2, '0');
+    const mm = String(d.getMinutes()).padStart(2, '0');
+    return 'Mis à jour le ' + d.getDate() + ' ' + mois[d.getMonth()] + ' à ' + hh + 'h' + mm;
+  } catch (e) {
+    return '';
+  }
+}
+
+function rendreSemaine(items) {
+  document.getElementById('count-semaine').textContent = items.length;
+  const ul = document.getElementById('liste-semaine');
+  if (!items.length) { ul.innerHTML = '<li class="vide">Rien de prévu.</li>'; return; }
+  ul.innerHTML = items.map((t) => (
+    '<li><div class="titre">' + echapper(t.titre) + '</div>' +
+    '<div class="meta">' + echapper(t.projetTitre) + (t.echeance ? ' · ' + echapper(t.echeance) : '') + '</div></li>'
+  )).join('');
+}
+
+function rendreRelances(items) {
+  document.getElementById('count-relances').textContent = items.length;
+  const ul = document.getElementById('liste-relances');
+  if (!items.length) { ul.innerHTML = '<li class="vide">Aucune relance en attente.</li>'; return; }
+  ul.innerHTML = items.map((r) => (
+    '<li class="item"><div class="who">' + echapper(r.nom) + '</div>' +
+    '<div class="about">' + echapper(r.tacheTitre) + ' · ' + echapper(r.projetTitre) + '</div></li>'
+  )).join('');
+}
+
+function rendreProjets(items) {
+  document.getElementById('count-projets').textContent = items.length;
+  const conteneur = document.getElementById('liste-projets');
+  conteneur.innerHTML = items.map((p) => {
+    const sev = p.severite || 'idle';
+    const taches = (p.taches || []).map((t) => (
+      '<div class="proj-tache"><div class="titre">' + echapper(t.titre) + '</div>' +
+      '<div class="meta">' + echapper(t.statut) + (t.echeance ? ' · ' + echapper(t.echeance) : '') + '</div></div>'
+    )).join('') || '<div class="vide">Aucune tâche ouverte.</div>';
+    return (
+      '<details class="projet"><summary>' +
+      '<span class="ptitre">' + echapper(p.titre) + '</span>' +
+      '<span class="sev ' + echapper(sev) + '">' + echapper(sev) + '</span>' +
+      '</summary><div class="taches">' + taches + '</div></details>'
+    );
+  }).join('');
+}
+
+function afficher(instantane) {
+  document.getElementById('maj').textContent = formatMaj(instantane.genereLe);
+  rendreSemaine(instantane.maSemaine || []);
+  rendreRelances(instantane.relances || []);
+  rendreProjets(instantane.projects || []);
+  document.getElementById('ecran-code').style.display = 'none';
+  document.getElementById('dashboard').classList.add('visible');
+}
+
+async function tenterOuverture() {
+  const champ = document.getElementById('code');
+  const erreur = document.getElementById('erreur');
+  const code = champ.value.trim();
+  erreur.classList.remove('visible');
+  if (!code) return;
+  try {
+    const clair = await dechiffrer(PAQUET, code);
+    const instantane = JSON.parse(clair);
+    champ.value = '';
+    afficher(instantane);
+  } catch (e) {
+    // Code errone ou paquet corrompu : message clair, on laisse ressaisir.
+    // Le code saisi n'est jamais conserve, ni dans une variable persistante
+    // ni dans le stockage du navigateur.
+    erreur.classList.add('visible');
+    champ.value = '';
+    champ.focus();
+  }
+}
+
+document.getElementById('valider').addEventListener('click', tenterOuverture);
+document.getElementById('code').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') tenterOuverture();
+});
+</script>
+</body>
+</html>
